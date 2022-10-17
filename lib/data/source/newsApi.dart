@@ -9,11 +9,11 @@ class NewsAPI {
         endpoint: "everything",
         parametersBuilder: () => {
           "q": searchQuery,
-          "from": "2022-09-01",
+          "from": "2022-09-17",
           "sortBy": "popularity",
           "apiKey": apiKey,
           "pageSize": Constants.pageSize,
-          "page": page,
+          "page": "$page",
         },
       );
 
@@ -24,7 +24,7 @@ class NewsAPI {
     return Uri(
       scheme: "https",
       host: Constants.newsApiBaseUrl,
-      path: endpoint,
+      path: "/v2/$endpoint",
       queryParameters: parametersBuilder(),
     );
   }

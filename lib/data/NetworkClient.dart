@@ -10,11 +10,11 @@ import 'Connection.dart';
 
 enum RequestType {get, post,put,delete}
 
-class Network{
+class NetworkClient{
   //Singleton
-  Network._privateConstructor();
-  static final Network _instance = Network._privateConstructor();
-  static Network get shared => _instance;
+  NetworkClient._privateConstructor();
+  static final NetworkClient _instance = NetworkClient._privateConstructor();
+  static NetworkClient get instance => _instance;
 
   //check connection status
   var connectionStatus;
@@ -24,11 +24,12 @@ class Network{
   Client client = Client();
 
   final Map<String, String> _headers = {
-    'Content-type': 'application/json',
+    'Content-type': 'application/json;charset=UTF-8',
     'Accept': 'application/json',
+    'Charset': 'utf-8'
   };
 
-  Future<T> _performWebRequest<T>(RequestType type, Uri url, {dynamic body}) async {
+  Future<T> performWebRequest<T>(RequestType type, Uri url, {dynamic body}) async {
     //Response initialization
     Response response;
 
