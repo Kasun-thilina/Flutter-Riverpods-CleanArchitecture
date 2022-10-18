@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:riverpod_demo/domain/Serializer.dart';
-import 'package:riverpod_demo/utils/Strings.dart';
+import 'package:riverpod_demo/utils/strings.dart';
 
 import 'Connection.dart';
 
