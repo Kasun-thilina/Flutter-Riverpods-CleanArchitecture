@@ -23,8 +23,10 @@ class MyApp extends StatelessWidget {
             primary: AppColors.primary,
           ),
           textTheme: const TextTheme(
-              headline2: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-              headline3: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400))),
+            headline2: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
+            headline3: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400),
+            bodyText1: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
+          )),
       home: const HomeScreen(),
       onGenerateRoute: AppRouter().onGenerateRoute,
     );
