@@ -6,4 +6,5 @@ class Strings {
   static const String search = "Search";
   static const String newsFeed = "News Feed";
   static const String cancel = "Cancel";
+  static const String readFullArticle = "Read the full article";
 }

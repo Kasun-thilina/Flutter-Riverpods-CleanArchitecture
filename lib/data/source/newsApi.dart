@@ -1,5 +1,7 @@
 import 'package:riverpod_demo/utils/constants.dart';
 
+import '../../utils/utils.dart';
+
 class NewsAPI {
   final String apiKey;
 
@@ -9,7 +11,7 @@ class NewsAPI {
         endpoint: "everything",
         parametersBuilder: () => {
           "q": searchQuery,
-          "from": "2022-09-17",
+          "from": Utils.getCurrentDate(),
           "sortBy": "popularity",
           "apiKey": apiKey,
           "pageSize": Constants.pageSize,

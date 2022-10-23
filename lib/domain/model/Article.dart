@@ -8,15 +8,14 @@ class Article {
   String? publishedAt;
   String? content;
 
-  Article(
-      {this.source,
-        this.author,
-        this.title,
-        this.description,
-        this.url,
-        this.urlToImage,
-        this.publishedAt,
-        this.content});
+  Article({this.source,
+    this.author,
+    this.title,
+    this.description,
+    this.url,
+    this.urlToImage,
+    this.publishedAt,
+    this.content});
 
   Article.fromJson(Map<String, dynamic> json) {
     source =

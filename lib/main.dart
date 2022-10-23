@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_demo/presentation/components/routes.dart';
-import 'package:riverpod_demo/presentation/features/home/HomeScreen.dart';
+import 'package:riverpod_demo/presentation/features/home/homeScreen.dart';
 import 'package:riverpod_demo/utils/appColors.dart';
 
 void main() async {

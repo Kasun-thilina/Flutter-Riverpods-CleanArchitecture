@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_demo/presentation/features/home/HomeProvider.dart';
+import 'package:riverpod_demo/presentation/components/empty_widget.dart';
+import 'package:riverpod_demo/presentation/features/home/homeProviders.dart';
+import 'package:riverpod_demo/presentation/features/home/widgets/news_item_widget.dart';
 import 'package:riverpod_demo/utils/appColors.dart';
 import 'package:riverpod_demo/utils/deviceUtils.dart';
 import 'package:riverpod_demo/utils/strings.dart';
+
+import '../../components/routes.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,8 +15,10 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchData = ref.watch(newsProvider);
+    final searchText = ref.watch(searchTextProvider);
     final isSearchEnabled = ref.watch(searchToggleProvider);
-    final searchHistory = ["Apple", "Covid 19", "iPhone", "Weather"];
+    List<String> searchHistory = ref.watch(searchHistoryProvider);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -34,10 +40,22 @@ class HomeScreen extends ConsumerWidget {
                   child: FocusScope(
                     child: Focus(
                       onFocusChange: (focus) {
+                        ref.read(searchHistoryProvider.notifier).readSearchHistory("");
                         ref.read(searchToggleProvider.notifier).state = !isSearchEnabled;
                       },
                       child: TextFormField(
+                        controller: TextEditingController()
+                          ..text = searchText
+                          ..selection = TextSelection.collapsed(offset: searchText.length),
                         textAlignVertical: TextAlignVertical.center,
+                        onFieldSubmitted: (text) {
+                          ref.read(searchStringProvider.notifier).state = text;
+                        },
+                        onChanged: (text) {
+                          ref.read(searchTextProvider.notifier).state = text;
+                          ref.read(searchHistoryProvider.notifier).readSearchHistory(text);
+                        },
+                        textInputAction: TextInputAction.search,
                         decoration: InputDecoration(
                           prefixIcon: const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -95,40 +113,63 @@ class HomeScreen extends ConsumerWidget {
                   child: Container(
                     decoration: BoxDecoration(color: AppColors.background),
                     child: searchData.when(
-                      loading: () => const CircularProgressIndicator(),
+                      loading: () => const Center(child: CircularProgressIndicator()),
                       error: (err, stack) => Text('Error: $err'),
-                      data: (articleRes) => Text(articleRes.articles![0].content!),
+                      data: (articleRes) => articleRes.articles != null
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: articleRes.articles?.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, AppRouter.newsDetailsScreen, arguments: articleRes.articles![index]);
+                                  },
+                                  child: NewsItemWidget(
+                                    article: articleRes.articles![index],
+                                  ),
+                                );
+                              },
+                            )
+                          : emptyWidget(),
                     ),
                   ),
-                ),
+                )
               ],
             ),
             Visibility(
               visible: isSearchEnabled,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: searchHistory.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        print("D");
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            bottom: BorderSide(color: AppColors.border),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: searchHistory.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          ref.read(searchTextProvider.notifier).state = searchHistory[index];
+                          ref.read(searchToggleProvider.notifier).state = !isSearchEnabled;
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          ref.read(searchStringProvider.notifier).state = searchHistory[index];
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: DeviceUtils.getScaledWidth(context, 0.03)),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              bottom: BorderSide(color: AppColors.border),
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: DeviceUtils.getScaledHeight(context, 0.015)),
+                          child: Text(
+                            searchHistory[index],
+                            style: Theme.of(context).textTheme.bodyText1,
                           ),
                         ),
-                        padding: EdgeInsets.symmetric(
-                            vertical: DeviceUtils.getScaledHeight(context, 0.015), horizontal: DeviceUtils.getScaledWidth(context, 0.03)),
-                        child: Text(
-                          searchHistory[index],
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+              ),
             ),
           ],
         ),
